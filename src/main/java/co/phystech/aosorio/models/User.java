@@ -3,6 +3,7 @@
  */
 package co.phystech.aosorio.models;
 
+import java.sql.Date;
 import java.util.UUID;
 
 /**
@@ -11,22 +12,13 @@ import java.util.UUID;
  */
 public class User {
 
-	UUID id;
+	UUID user_uuid;
 	String username;
-	String password;
+	String hash;
 	String role;
-	/**
-	 * @return the id
-	 */
-	public UUID getId() {
-		return id;
-	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(UUID id) {
-		this.id = id;
-	}
+	String affiliation;
+	Date date_added;
+
 	/**
 	 * @return the username
 	 */
@@ -40,18 +32,6 @@ public class User {
 		this.username = username;
 	}
 	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	/**
 	 * @return the role
 	 */
 	public String getRole() {
@@ -63,7 +43,55 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+	/**
+	 * @return the hash
+	 */
+	public String getHash() {
+		return hash;
+	}
+	/**
+	 * @param hash the hash to set
+	 */
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+	/**
+	 * @return the user_uuid
+	 */
+	public UUID getUser_uuid() {
+		return user_uuid;
+	}
+	/**
+	 * @param user_uuid the user_uuid to set
+	 */
+	public void setUser_uuid(UUID user_uuid) {
+		this.user_uuid = user_uuid;
+	}
+	/**
+	 * @return the affiliation
+	 */
+	public String getAffiliation() {
+		return affiliation;
+	}
+	/**
+	 * @param affiliation the affiliation to set
+	 */
+	public void setAffiliation(String affiliation) {
+		this.affiliation = affiliation;
+	}
+	/**
+	 * @return the date_added
+	 */
+	public Date getDate_added() {
+		return date_added;
+	}
+	/**
+	 * @param date_added the date_added to set
+	 */
+	public void setDate_added(Date date_added) {
+		this.date_added = date_added;
+	}
+
 	
 	
 }

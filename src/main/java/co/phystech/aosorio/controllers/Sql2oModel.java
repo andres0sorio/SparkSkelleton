@@ -3,6 +3,7 @@
  */
 package co.phystech.aosorio.controllers;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import co.phystech.aosorio.exceptions.WrongUserException;
 import co.phystech.aosorio.models.User;
+import co.phystech.aosorio.services.GeneralSvc;
 import co.phystech.aosorio.services.IUuidGenerator;
 import co.phystech.aosorio.services.RandomUuidGenerator;
 
@@ -33,14 +36,41 @@ public class Sql2oModel implements IModel {
 
 	@Override
 	public UUID createUser(String username, String role, String password) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		try (Connection conn = sql2o.beginTransaction()) {
+			UUID userUuid = uuidGenerator.generate();
+			String hash =  GeneralSvc.getHash(password, userUuid.toString());
+			
+			conn.createQuery(
+					"insert into users(user_uuid, username, hash, role, affiliation, date_added) VALUES (:user_uuid, :username, :hash, :role, :affiliation, :date_added)")
+					.addParameter("user_uuid", userUuid)
+					.addParameter("username", username)
+					.addParameter("hash", hash)
+					.addParameter("role", role)
+					.addParameter("affiliation", "phystech")
+					.addParameter("date_added", new Date()).executeUpdate();
+			conn.commit();
+			
+			slf4jLogger.info("Added new user: " + username);
+			
+			return userUuid;
+		}
+		
 	}
 
 	@Override
-	public boolean getUser(String username) {
-		// TODO Auto-generated method stub
-		return false;
+	public User getUser(String username) throws WrongUserException{
+
+		try (Connection conn = sql2o.open()) {
+			List<User> userQuery = conn.createQuery("select * from users where username=:username")
+					.addParameter("username", username).executeAndFetch(User.class);
+
+			if (userQuery.isEmpty()) {
+				throw new WrongUserException();
+			} else
+				return userQuery.get(0);
+		}
+
 	}
 
 	@Override
@@ -51,8 +81,11 @@ public class Sql2oModel implements IModel {
 
 	@Override
 	public boolean deleteUser(String username) {
-		// TODO Auto-generated method stub
-		return false;
+		try (Connection conn = sql2o.open()) {
+			conn.createQuery("delete from users where username=:username")
+			.addParameter("username", username).executeUpdate();
+			return true;
+		}
 	}
 
 	@Override
@@ -61,5 +94,4 @@ public class Sql2oModel implements IModel {
 		return null;
 	}
 
-	
 }

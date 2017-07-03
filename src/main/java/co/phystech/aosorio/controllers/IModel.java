@@ -6,6 +6,7 @@ package co.phystech.aosorio.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import co.phystech.aosorio.exceptions.WrongUserException;
 import co.phystech.aosorio.models.User;
 
 /**
@@ -19,7 +20,7 @@ public interface IModel {
 			String role, 
 			String password);
 
-	boolean getUser(String username);
+	User getUser(String username) throws WrongUserException;
 	
 	boolean updateUser(String username);
 	

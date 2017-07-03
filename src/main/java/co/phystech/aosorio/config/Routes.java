@@ -9,10 +9,7 @@ package co.phystech.aosorio.config;
  */
 public class Routes {
 	
-	public static final String FICHES = "/fiches/";
-	
-	public static final String BOOKS = "/books/";
-	
-	public static final String COMMENTS = "/comments/";
+	public static final String AUTH = "/auth/";
+
 
 }

@@ -3,18 +3,16 @@
  */
 package co.phystech.aosorio.app;
 
-import static spark.Spark.post;
 import static spark.Spark.get;
-import static spark.Spark.put;
-import static spark.Spark.delete;
-
 import static spark.Spark.options;
 import static spark.Spark.port;
+import static spark.Spark.post;
 
-import co.phystech.aosorio.services.GeneralSvc;
-import co.phystech.aosorio.services.StatisticsSvc;
+//import co.phystech.aosorio.services.StatisticsSvc;
 import co.phystech.aosorio.config.CorsFilter;
 import co.phystech.aosorio.config.Routes;
+import co.phystech.aosorio.services.AuthenticationSvc;
+import co.phystech.aosorio.services.GeneralSvc;
 
 /**
  * @author AOSORIO
@@ -30,9 +28,11 @@ public class Main {
 		port(getHerokuAssignedPort());
 
 		CorsFilter.apply();
-		
+
 		get("/hello", (req, res) -> "Fiche DB service deployed");
-		
+
+		post(Routes.AUTH + "login/", AuthenticationSvc::doLogin, GeneralSvc.json());
+
 		options("/*", (request, response) -> {
 
 			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
@@ -45,7 +45,7 @@ public class Main {
 			}
 			return "OK";
 		});
-		
+
 	}
 
 	static int getHerokuAssignedPort() {
