@@ -29,9 +29,15 @@ public class Main {
 
 		CorsFilter.apply();
 
-		get("/hello", (req, res) -> "Fiche DB service deployed");
+		get("/hello", (req, res) -> "Login service deployed");
 
 		post(Routes.AUTH + "login/", AuthenticationSvc::doLogin, GeneralSvc.json());
+		
+		//... User control - request access
+		
+		post(Routes.AUTH + "access/", AuthenticationSvc::checkAccess, GeneralSvc.json());
+		
+		//before(Routes.AUTH + "/client", AuthenticationSvc::authClient);
 
 		options("/*", (request, response) -> {
 
@@ -53,7 +59,7 @@ public class Main {
 		if (processBuilder.environment().get("PORT") != null) {
 			return Integer.parseInt(processBuilder.environment().get("PORT"));
 		}
-		return 4567;
+		return 4568;
 	}
 
 }

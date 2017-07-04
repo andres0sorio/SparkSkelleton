@@ -43,7 +43,7 @@ public class AuthenticationJWT implements IAuthentication {
 			User currentUser = model.getUser(pUsername);
 
 			validatePassword(currentUser, pPassword);
-			
+
 			setToken(createJWT(currentUser));
 
 		} catch (WrongUserException ex) {
@@ -97,23 +97,24 @@ public class AuthenticationJWT implements IAuthentication {
 
 	}
 
-	public static void readJWT(String compactJws) throws SignatureException {
+	public static void validateJWT(User currentUser, String compactJws) throws SignatureException {
 
 		try {
 
-			String pSalt = "";
+			String pSalt = currentUser.getUser_uuid().toString();
 			Jwts.parser().setSigningKey(pSalt).parseClaimsJws(compactJws);
-
-			// OK, we can trust this JWT
+			slf4jLogger.info("Token has a valid signature");
 
 		} catch (SignatureException ex) {
 			throw ex;
+			
 		}
 
 	}
 
 	/**
-	 * @param token the token to set
+	 * @param token
+	 *         the token to set
 	 */
 	public static void setToken(Object token) {
 		AuthenticationJWT.token = token;

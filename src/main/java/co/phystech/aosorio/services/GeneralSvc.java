@@ -3,16 +3,23 @@
  */
 package co.phystech.aosorio.services;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import co.phystech.aosorio.exceptions.InvalidTokenException;
 import spark.ResponseTransformer;
 
 /**
@@ -83,4 +90,53 @@ public class GeneralSvc {
 	
 	}
 
+	/**
+	 * Get from token body the corresponding Claim with key pKey
+	 * 
+	 * @param pJwt
+	 * @param pKey
+	 * @return
+	 * @throws InvalidTokenException
+	 *             : in case the token has not three parts or if claim is not
+	 *             found
+	 */
+	public static String getTokenClaim(String pJwt, String pKey) throws InvalidTokenException {
+
+		String[] jwtElements = pJwt.split("\\.");
+
+		if (jwtElements.length < 3) {
+			throw new InvalidTokenException();
+		}
+
+		String value = null;
+
+		ByteArrayInputStream inStream = new ByteArrayInputStream(Base64.getDecoder().decode(jwtElements[1]));
+
+		BufferedReader streamReader = new BufferedReader(new InputStreamReader(inStream));
+		StringBuilder responseStrBuilder = new StringBuilder();
+		String inputStr;
+
+		try {
+			while ((inputStr = streamReader.readLine()) != null)
+				responseStrBuilder.append(inputStr);
+
+			JsonParser parser = new JsonParser();
+			JsonObject json = parser.parse(responseStrBuilder.toString()).getAsJsonObject();
+
+			if (json.getAsJsonObject().has(pKey)) {
+				value = json.getAsJsonObject().get(pKey).getAsString();
+				slf4jLogger.info("Found key with value: " + value);
+			} else {
+				throw new InvalidTokenException();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		}
+
+		return value;
+	}
+	
+	
 }
