@@ -94,4 +94,18 @@ public class Sql2oModel implements IModel {
 		return null;
 	}
 
+	@Override
+	public boolean userExists(String username) {
+		
+		try {	
+			this.getUser(username);
+		
+		} catch ( WrongUserException ex ) {
+			slf4jLogger.info("User does not exists: " + username);
+			return false;
+		}
+		
+		return true;
+	}
+
 }

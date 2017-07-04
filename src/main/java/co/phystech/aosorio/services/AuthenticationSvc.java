@@ -98,6 +98,7 @@ public class AuthenticationSvc {
 			pResponse.status(401);
 			
 		} catch ( Exception ex ) {
+			ex.printStackTrace();
 			response = messager.getNotOkMessage("invalid");
 			pResponse.status(401);
 		}

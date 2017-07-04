@@ -11,6 +11,7 @@ import static spark.Spark.post;
 //import co.phystech.aosorio.services.StatisticsSvc;
 import co.phystech.aosorio.config.CorsFilter;
 import co.phystech.aosorio.config.Routes;
+import co.phystech.aosorio.controllers.UserController;
 import co.phystech.aosorio.services.AuthenticationSvc;
 import co.phystech.aosorio.services.GeneralSvc;
 
@@ -38,6 +39,8 @@ public class Main {
 		post(Routes.AUTH + "access/", AuthenticationSvc::checkAccess, GeneralSvc.json());
 		
 		//before(Routes.AUTH + "/client", AuthenticationSvc::authClient);
+			
+		post(Routes.AUTH + "users/", UserController::createUser, GeneralSvc.json());
 
 		options("/*", (request, response) -> {
 

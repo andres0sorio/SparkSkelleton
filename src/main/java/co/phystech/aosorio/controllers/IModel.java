@@ -28,5 +28,6 @@ public interface IModel {
 
 	List<User> getAllUsers();
 	
+	boolean userExists(String username);
 	
 }
