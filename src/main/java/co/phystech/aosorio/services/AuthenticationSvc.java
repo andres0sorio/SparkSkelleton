@@ -82,7 +82,6 @@ public class AuthenticationSvc {
 		try {
 		
 			slf4jLogger.info("Check access " + pRequest.headers("Authorization"));
-			//String token = pRequest.headers("Authorization").split(" ")[1];
 			
 			String token = pRequest.headers("Authorization");
 			
