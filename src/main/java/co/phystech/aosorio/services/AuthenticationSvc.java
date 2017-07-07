@@ -39,7 +39,8 @@ public class AuthenticationSvc {
 		ObjectMapper mapper = new ObjectMapper();
 						
 		pResponse.type("application/json");
-		
+		BackendMessage messager = new BackendMessage();
+				
 		try {
 			
 			NewUserPayload data =  mapper.readValue(pRequest.body(), NewUserPayload.class);
@@ -47,20 +48,21 @@ public class AuthenticationSvc {
 			IAuthentication authMethod = new AuthenticationJWT();
 		
 			authMethod.doAuthentication(data.getUsername(), data.getPassword());
-			response = authMethod.getToken();
 			
 			pResponse.status(200);
-			return response;
+			return messager.getOkMessage(authMethod.getToken().toString());
 			
 		} catch ( WrongUserException ex) {
 			pResponse.status(401);
+			response = messager.getNotOkMessage("Wrong username");
 			
 		} catch ( WrongPasswordException ex ) {
 			pResponse.status(401);
+			response = messager.getNotOkMessage("Wrong password");
 			
 		} catch (Exception e) {
 			pResponse.status(401);
-			e.printStackTrace();
+			response = messager.getNotOkMessage("Something is not right. Please check");
 		}
 		
 		return response;
@@ -79,7 +81,10 @@ public class AuthenticationSvc {
 		
 		try {
 		
-			String token = pRequest.headers("Authorization").split(" ")[1];
+			slf4jLogger.info("Check access " + pRequest.headers("Authorization"));
+			//String token = pRequest.headers("Authorization").split(" ")[1];
+			
+			String token = pRequest.headers("Authorization");
 			
 			Sql2o sql2o = SqlController.getInstance().getAccess();
 			IModel model = new Sql2oModel(sql2o);
