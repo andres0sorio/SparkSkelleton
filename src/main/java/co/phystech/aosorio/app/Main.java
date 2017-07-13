@@ -7,6 +7,7 @@ import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.before;
 
 //import co.phystech.aosorio.services.StatisticsSvc;
 import co.phystech.aosorio.config.CorsFilter;
@@ -38,9 +39,11 @@ public class Main {
 		
 		post(Routes.AUTH + "access/", AuthenticationSvc::checkAccess, GeneralSvc.json());
 		
-		//before(Routes.AUTH + "/client", AuthenticationSvc::authClient);
+		//... Administrative services
+		
+		before(Routes.ADMIN + "*", AuthenticationSvc::authAdmin);
 			
-		post(Routes.AUTH + "users/", UserController::createUser, GeneralSvc.json());
+		post(Routes.ADMIN + "users/", UserController::createUser, GeneralSvc.json());
 
 		options("/*", (request, response) -> {
 

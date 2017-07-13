@@ -110,5 +110,16 @@ public class AuthenticationSvc {
 		return response;
 		
 	}
-
+	
+	public static Object authAdmin(Request pRequest, Response pResponse) {
+		
+		if ( pRequest.requestMethod().equals("OPTIONS") ) {
+			pResponse.status(200);
+			return "OK";
+		}
+		
+		return checkAccess(pRequest, pResponse);
+		
+	}
+	
 }
